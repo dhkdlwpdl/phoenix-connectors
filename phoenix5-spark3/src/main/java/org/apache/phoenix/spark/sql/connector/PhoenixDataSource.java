@@ -17,6 +17,9 @@
  */
 package org.apache.phoenix.spark.sql.connector;
 
+import org.apache.spark.sql.SQLContext;
+import org.apache.spark.sql.sources.BaseRelation;
+import org.apache.spark.sql.sources.RelationProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.phoenix.spark.SparkSchemaUtil;
@@ -44,7 +47,7 @@ import static org.apache.phoenix.util.PhoenixRuntime.JDBC_PROTOCOL_SEPARATOR;
 /**
  * Implements the DataSourceV2 api to read and write from Phoenix tables
  */
-public class PhoenixDataSource implements TableProvider, DataSourceRegister {
+public class PhoenixDataSource implements TableProvider, DataSourceRegister, RelationProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(PhoenixDataSource.class);
     public static final String SKIP_NORMALIZING_IDENTIFIER = "skipNormalizingIdentifier";
@@ -129,5 +132,10 @@ public class PhoenixDataSource implements TableProvider, DataSourceRegister {
     @Override
     public String shortName() {
         return "phoenix";
+    }
+
+    @Override
+    public BaseRelation createRelation(SQLContext sqlContext, scala.collection.immutable.Map<String, String> parameters) {
+        return new PhoenixRelation(sqlContext, parameters, schema);
     }
 }
