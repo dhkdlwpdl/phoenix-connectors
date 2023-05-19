@@ -136,6 +136,7 @@ public class PhoenixDataSource implements TableProvider, DataSourceRegister, Rel
 
     @Override
     public BaseRelation createRelation(SQLContext sqlContext, scala.collection.immutable.Map<String, String> parameters) {
-        return new PhoenixRelation(sqlContext, parameters, schema);
+        StructType schem = inferSchema(new CaseInsensitiveStringMap(JavaConverters.mapAsJavaMap(parameters)));
+        return new PhoenixRelation(sqlContext, parameters, schem);
     }
 }
