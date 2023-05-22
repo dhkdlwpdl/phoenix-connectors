@@ -81,6 +81,8 @@ public class PhoenixDataWriter implements DataWriter<InternalRow> {
                 colNames = colNames.stream().map(SchemaUtil::normalizeIdentifier).collect(Collectors.toList());
             }
             String upsertSql = QueryUtil.constructUpsertStatement(options.getTableName(), colNames, null);
+            upsertSql = upsertSql + "on duplicate key ignore" ; // test by yj: Phoenix의 경우 Insert를 지원하지 않기 때문에 중복되는 priamry key에 대해서 Update를 진행하지 않고 무시하도록 솔정
+
             this.statement = this.conn.prepareStatement(upsertSql);
             // Configure batch size to 0 or negative value to disable intermediate or batch commits in task.
             // So that commit can be called only once at the end to task execution.
