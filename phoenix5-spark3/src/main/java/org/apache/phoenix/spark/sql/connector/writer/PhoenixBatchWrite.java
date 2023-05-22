@@ -60,7 +60,8 @@ public class PhoenixBatchWrite implements BatchWrite {
                                                                                          StructType schema) {
         String scn = options.get(CURRENT_SCN_VALUE);
         String tenantId = options.get(PhoenixRuntime.TENANT_ID_ATTRIB);
-        String zkUrl = options.get(ZOOKEEPER_URL);
+        String zkUrl = options.getOrDefault(ZOOKEEPER_URL, options.get(ZOOKEEPER_URL.toLowerCase())); 
+            // test by yj: spark 데이터소스 테이블의 경우 options가 카멜이 아닌 일괄 소문자로 변형된 경우가 있었음
         String tableName = options.get("table");
         boolean skipNormalizingIdentifier = Boolean.parseBoolean(options.getOrDefault(SKIP_NORMALIZING_IDENTIFIER, Boolean.toString(false)));
         return new PhoenixDataSourceWriteOptions.Builder()
