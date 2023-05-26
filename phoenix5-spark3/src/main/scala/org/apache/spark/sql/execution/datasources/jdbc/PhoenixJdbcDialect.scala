@@ -19,7 +19,7 @@
 package org.apache.spark.sql.execution.datasources.jdbc
 
 import org.apache.spark.sql.jdbc.{JdbcDialect, JdbcType}
-import org.apache.spark.sql.types.{BinaryType, ByteType, DataType, StringType, ShortType}
+import org.apache.spark.sql.types.{ArrayType, BinaryType, ByteType, DataType, ShortType, StringType}
 
 private object PhoenixJdbcDialect  extends JdbcDialect {
 
@@ -33,6 +33,7 @@ private object PhoenixJdbcDialect  extends JdbcDialect {
     case BinaryType => Some(JdbcType("BINARY(" + dt.defaultSize + ")", java.sql.Types.BINARY))
     case ByteType => Some(JdbcType("TINYINT", java.sql.Types.TINYINT))
     case ShortType => Some(JdbcType("SMALLINT", java.sql.Types.SMALLINT))
+    case ArrayType(et, _) => Some(JdbcType("ARRAY", java.sql.Types.ARRAY))
     case _ => None
   }
 
