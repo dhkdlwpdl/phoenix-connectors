@@ -153,10 +153,10 @@ object SparkJdbcUtil {
             }
 
         case StringType =>
-          (array: Object) =>
-            // some underling types are not String such as uuid, inet, cidr, etc.
-            array.asInstanceOf[Array[java.lang.Object]]
-              .map(obj => if (obj == null) null else UTF8String.fromString(obj.toString))
+          (array: Object) => array.asInstanceOf[Array[String]].map(UTF8String.fromString)
+        // some underling types are not String such as uuid, inet, cidr, etc.
+        //            array.asInstanceOf[Array[java.lang.Object]]
+        //              .map(obj => if (obj == null) null else UTF8String.fromString(obj.toString))
 
         case DateType =>
           (array: Object) =>
@@ -175,6 +175,9 @@ object SparkJdbcUtil {
           throw new IllegalArgumentException(s"Unsupported array element " +
             s"type ${dt.catalogString} based on binary")
 
+        case DoubleType => (array: Object) => array.asInstanceOf[Array[Double]]
+        case IntegerType => (array: Object) => array.asInstanceOf[Array[Int]]
+        case BooleanType => (array: Object) => array.asInstanceOf[Array[Boolean]]
         case ArrayType(_, _) =>
           throw new IllegalArgumentException("Nested arrays unsupported")
 
